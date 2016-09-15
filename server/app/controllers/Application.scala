@@ -15,7 +15,7 @@ import scala.concurrent.duration._
 class Application @Inject()(cache: CacheApi, dataService: DataService)(implicit context: ExecutionContext, config: Configuration) extends Controller {
 
    def index = Action {
-     Ok(views.html.main("barry"))
+     Ok(views.html.main("METAB"))
    }
 
     def getWeather = Action.async { implicit request =>
