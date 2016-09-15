@@ -53,7 +53,7 @@ object SiteContainer {
 
       val subreddits = Seq("scala", "elm", "reactjs")
       subreddits.foreach { subreddit =>
-        Ajax.get(s"http://localhost:9000/reddit/$subreddit").onSuccess {
+        Ajax.get(s"/reddit/$subreddit").onSuccess {
           case xhr => {
             val data = read[Seq[RedditLink]](xhr.responseText)
             subreddit match {
@@ -65,14 +65,14 @@ object SiteContainer {
         }
       }
 
-       Ajax.get(s"http://localhost:9000/hnTop").onSuccess {
+       Ajax.get(s"/hnTop").onSuccess {
          case xhr => {
            val topStories = read[Seq[HNItem]](xhr.responseText)
            scope.modState(_.copy(hnTop = topStories)).runNow()
          }
 
       }
-      Ajax.get(s"http://localhost:9000/hnAsk").onSuccess {
+      Ajax.get(s"/hnAsk").onSuccess {
         case xhr => {
           val askStories = read[Seq[HNItem]](xhr.responseText)
           scope.modState(_.copy(hnAsk = askStories)).runNow()

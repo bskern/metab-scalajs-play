@@ -21,7 +21,7 @@ object WeatherContainer {
     .initialState(State(weather = Weather("000", "empty", "44", "55")))
     .renderBackend[Backend]
     .componentDidMount(scope => Callback {
-      val url = "http://localhost:9000/weather"
+      val url = "/weather"
 
       Ajax.get(url).onSuccess {
         case xhr => {
