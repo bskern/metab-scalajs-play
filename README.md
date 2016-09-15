@@ -8,7 +8,7 @@ Running
 sbt run...then navigate to localhost:9000 
  
  
-Differences from ScalaJSReact version
+Differences from [ScalaJSReact](https://github.com/bskern/metab_scalajs) version
 =====================================
 By adding a Play backend and sharing domain objects between the two I was able to simplify the front end.
 Most of the processing logic is in the backend and the data is cached to help performance. The react components
