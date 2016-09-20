@@ -12,6 +12,10 @@ import scalacss.ScalaCssReact._
 import scalacss._
 import scala.concurrent.Future
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
+import autowire._
+import services.AjaxClient
+import shared.Api
+
 object SiteContainer {
 
   import upickle.default._
@@ -36,7 +40,7 @@ object SiteContainer {
           ),
           <.div(Style.row,
             <.div(Style.col(6),
-              HNContainer(HNContainer.Props("Top Stories",s.hnTop))),
+              HNContainer(HNContainer.Props("Top Stories", s.hnTop))),
             <.div(Style.col(6),
               HNContainer(HNContainer.Props("Ask", s.hnAsk)))
           )
@@ -53,30 +57,20 @@ object SiteContainer {
 
       val subreddits = Seq("scala", "elm", "reactjs")
       subreddits.foreach { subreddit =>
-        Ajax.get(s"/reddit/$subreddit").onSuccess {
-          case xhr => {
-            val data = read[Seq[RedditLink]](xhr.responseText)
-            subreddit match {
-              case "scala" => scope.modState(_.copy(scala = data)).runNow()
-              case "elm" => scope.modState(_.copy(elm = data)).runNow()
-              case "reactjs" => scope.modState(_.copy(reactjs = data)).runNow()
-            }
+        AjaxClient[Api].getSubReddit(subreddit).call().foreach { redditData =>
+          subreddit match {
+            case "scala" => scope.modState(_.copy(scala = redditData)).runNow()
+            case "elm" => scope.modState(_.copy(elm = redditData)).runNow()
+            case "reactjs" => scope.modState(_.copy(reactjs = redditData)).runNow()
           }
         }
       }
 
-       Ajax.get(s"/hnTop").onSuccess {
-         case xhr => {
-           val topStories = read[Seq[HNItem]](xhr.responseText)
-           scope.modState(_.copy(hnTop = topStories)).runNow()
-         }
-
+      AjaxClient[Api].getTopHN().call().foreach { topStories =>
+        scope.modState(_.copy(hnTop = topStories)).runNow()
       }
-      Ajax.get(s"/hnAsk").onSuccess {
-        case xhr => {
-          val askStories = read[Seq[HNItem]](xhr.responseText)
-          scope.modState(_.copy(hnAsk = askStories)).runNow()
-        }
+      AjaxClient[Api].getAskHN().call().foreach { askStories =>
+        scope.modState(_.copy(hnAsk = askStories)).runNow()
       }
     }).build
 

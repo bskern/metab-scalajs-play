@@ -2,9 +2,14 @@ package components
 
 import japgolly.scalajs.react.{BackendScope, Callback, ReactComponentB}
 import org.scalajs.dom.ext.Ajax
-import shared.Weather
+import services.AjaxClient
+import shared.{Api, Weather}
+import upickle.default._
+import upickle.Js
+import autowire._
 
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
+
 
 case class State(weather: Weather)
 
@@ -13,20 +18,12 @@ class Backend($: BackendScope[Unit, State]) {
 }
 
 object WeatherContainer {
-
-  import upickle.default._
-
-
   val app = ReactComponentB[Unit]("weatherApp")
     .initialState(State(weather = Weather("000", "empty", "44", "55")))
     .renderBackend[Backend]
     .componentDidMount(scope => Callback {
-      val url = "/weather"
-
-      Ajax.get(url).onSuccess {
-        case xhr => {
-          scope.setState(State(read[Weather](xhr.responseText))).runNow()
-        }
+      AjaxClient[Api].getWeather().call().foreach { weather =>
+        scope.setState(State(weather)).runNow()
       }
     }).build
 

@@ -25,36 +25,36 @@ lazy val client = (project in file("client")).settings(
   persistLauncher in Test := false,
   libraryDependencies ++= Seq(
     "com.github.japgolly.scalajs-react" %%% "core" % "0.11.1",
-      "com.github.japgolly.scalajs-react" %%% "extra" % "0.11.1",
-      "com.github.japgolly.scalacss" %%% "core" % "0.5.0",
-      "com.github.japgolly.scalacss" %%% "ext-react" % "0.5.0"
+    "com.github.japgolly.scalajs-react" %%% "extra" % "0.11.1",
+    "com.github.japgolly.scalacss" %%% "core" % "0.5.0",
+    "com.github.japgolly.scalacss" %%% "ext-react" % "0.5.0"
   ),
-    jsDependencies ++= Seq(
+  jsDependencies ++= Seq(
 
-      "org.webjars.bower" % "react" % "15.2.1"
-        /        "react-with-addons.js"
-        minified "react-with-addons.min.js"
-        commonJSName "React",
+    "org.webjars.bower" % "react" % "15.2.1"
+      / "react-with-addons.js"
+      minified "react-with-addons.min.js"
+      commonJSName "React",
 
-      "org.webjars.bower" % "react" % "15.2.1"
-        /         "react-dom.js"
-        minified  "react-dom.min.js"
-        dependsOn "react-with-addons.js"
-        commonJSName "ReactDOM",
+    "org.webjars.bower" % "react" % "15.2.1"
+      / "react-dom.js"
+      minified "react-dom.min.js"
+      dependsOn "react-with-addons.js"
+      commonJSName "ReactDOM",
 
-      "org.webjars.bower" % "react" % "15.2.1"
-        /         "react-dom-server.js"
-        minified  "react-dom-server.min.js"
-        dependsOn "react-dom.js"
-        commonJSName "ReactDOMServer",
-      "org.webjars" % "jquery" %  "1.11.1"
-        /         "jquery.js"
-        minified  "jquery.min.js",
-      "org.webjars" % "bootstrap" %  "3.3.6"
-        /         "bootstrap.js"
-        minified  "bootstrap.min.js"
-        dependsOn "jquery.js"
-    )
+    "org.webjars.bower" % "react" % "15.2.1"
+      / "react-dom-server.js"
+      minified "react-dom-server.min.js"
+      dependsOn "react-dom.js"
+      commonJSName "ReactDOMServer",
+    "org.webjars" % "jquery" % "1.11.1"
+      / "jquery.js"
+      minified "jquery.min.js",
+    "org.webjars" % "bootstrap" % "3.3.6"
+      / "bootstrap.js"
+      minified "bootstrap.min.js"
+      dependsOn "jquery.js"
+  )
 
 ).enablePlugins(ScalaJSPlugin, ScalaJSWeb).
   dependsOn(sharedJs)
@@ -62,7 +62,9 @@ lazy val client = (project in file("client")).settings(
 lazy val shared = (crossProject.crossType(CrossType.Pure) in file("shared")).
   settings(
     scalaVersion := scalaV,
-    libraryDependencies ++= Seq("com.lihaoyi" %%% "upickle" % "0.4.1")).
+    libraryDependencies ++= Seq(
+      "com.lihaoyi" %%% "upickle" % "0.4.1",
+      "com.lihaoyi" %%% "autowire" % "0.2.5")).
   jsConfigure(_ enablePlugins ScalaJSWeb)
 
 lazy val sharedJvm = shared.jvm

@@ -5,13 +5,7 @@
 # Home page
 GET     /                                 controllers.Application.index
 
-GET     /weather                    controllers.Application.getWeather
-
-GET     /reddit/:subreddit          controllers.Application.getSubReddit(subreddit)
-
-GET     /hnTop                      controllers.Application.getHNTop
-
-GET     /hnAsk                      controllers.Application.getHNAsk
+POST    /api/*path                  controllers.AutowireCtrl.autowireApi(path)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
