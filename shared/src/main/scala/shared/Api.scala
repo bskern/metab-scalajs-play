@@ -6,11 +6,11 @@ import scala.concurrent.Future
 
 
 trait Api {
-  def getWeather(): Weather
+  def getWeather(): Future[Weather]
 
-  def getSubReddit(sr: String): Seq[RedditProcessing.RedditLink]
+  def getSubReddit(sr: String): Future[Seq[RedditProcessing.RedditLink]]
 
-  def getTopHN(): Seq[HNItem]
+  def getTopHN(): Future[Seq[HNItem]]
 
-  def getAskHN(): Seq[HNItem]
+  def getAskHN(): Future[Seq[HNItem]]
 }

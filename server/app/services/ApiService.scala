@@ -10,42 +10,45 @@ import shared.{Api, HNProcessing, RedditProcessing, Weather}
 import upickle.default._
 
 import scala.concurrent.duration._
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, Future}
 
 
 class ApiService  @Inject()(ds: DataService, cache:CacheApi)(implicit context: ExecutionContext) extends Api {
 
-  override def getWeather(): Weather = {
+  override def getWeather(): Future[Weather] = {
     cache.get[Weather]("weather") match {
-      case Some(w) => w
+      case Some(w) => Future.successful(w)
       case None =>
-        val w = Await.result(ds.getWeather(), 5 seconds)
-        cache.set("weather", w, 15.minutes)
-        w
+        ds.getWeather().map { w =>
+          cache.set("weather", w, 15.minutes)
+          w
+        }
     }
   }
 
-  override def getSubReddit(sr: String): Seq[RedditProcessing.RedditLink] = {
+  override def getSubReddit(sr: String): Future[Seq[RedditProcessing.RedditLink]] = {
     cache.get[Seq[RedditProcessing.RedditLink]](s"reddit-$sr") match {
-      case Some(r) => r
+      case Some(r) => Future.successful(r)
       case None =>
-        val r = Await.result(ds.getDataFromReddit(sr), 5 seconds)
+      ds.getDataFromReddit(sr).map { r=>
         cache.set(s"reddit-$sr", r, 5.minutes)
         r
+      }
     }
   }
 
-  override def getAskHN(): Seq[HNItem] = getHN(Ask)
+  override def getAskHN(): Future[Seq[HNItem]] = getHN(Ask)
 
-  override def getTopHN(): Seq[HNItem] = getHN(Top)
+  override def getTopHN(): Future[Seq[HNItem]] = getHN(Top)
 
-  private def getHN(entityType: HN): Seq[HNProcessing.HNItem] = {
+  private def getHN(entityType: HN): Future[Seq[HNProcessing.HNItem]] = {
     cache.get[Seq[HNProcessing.HNItem]](entityType.cacheKey) match {
-      case Some(hn) => hn
+      case Some(hn) => Future.successful(hn)
       case None =>
-        val hn = Await.result(ds.fetchFromHN(entityType), 5 seconds)
-        cache.set(entityType.cacheKey, hn, 5.minutes)
-        hn
+        ds.fetchFromHN(entityType).map { hn =>
+          cache.set(entityType.cacheKey, hn, 5.minutes)
+          hn
+        }
     }
   }
 }
