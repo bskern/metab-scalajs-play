@@ -38,30 +38,47 @@ object SiteContainer {
               SubredditContainer(SubredditContainer.Props("reactjs", s.reactjs))
             )
           ),
+          <.div(Style.container,
+            <.div(Style.row,
+              <.div(Style.col(6),
+                SubredditContainer(SubredditContainer.Props("objectivec",s.objc))
+              ),
+              <.div(Style.col(6),
+                SubredditContainer(SubredditContainer.Props("swift",s.swift))
+              )
+            ),
           <.div(Style.row,
             <.div(Style.col(6),
               HNContainer(HNContainer.Props("Top Stories", s.hnTop))),
             <.div(Style.col(6),
               HNContainer(HNContainer.Props("Ask", s.hnAsk)))
           )
-        ))
+        )))
     }
   }
 
-  case class State(scala: Seq[RedditLink], elm: Seq[RedditLink], reactjs: Seq[RedditLink], hnTop: Seq[HNItem], hnAsk: Seq[HNItem])
+  case class State(scala: Seq[RedditLink],
+                   elm: Seq[RedditLink],
+                   reactjs: Seq[RedditLink],
+                   objc: Seq[RedditLink],
+                   swift: Seq[RedditLink],
+                   hnTop: Seq[HNItem],
+                   hnAsk: Seq[HNItem])
 
   val component = ReactComponentB[Unit]("siteContainer")
-    .initialState(State(Nil, Nil, Nil, Nil, Nil))
+    .initialState(State(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
     .renderBackend[Backend]
     .componentDidMount(scope => Callback {
 
-      val subreddits = Seq("scala", "elm", "reactjs")
+      val subreddits = Seq("scala", "elm", "reactjs","objectivec","swift")
       subreddits.foreach { subreddit =>
         AjaxClient[Api].getSubReddit(subreddit).call().foreach { redditData =>
           subreddit match {
             case "scala" => scope.modState(_.copy(scala = redditData)).runNow()
             case "elm" => scope.modState(_.copy(elm = redditData)).runNow()
             case "reactjs" => scope.modState(_.copy(reactjs = redditData)).runNow()
+            case "objectivec" => scope.modState(_.copy(objc = redditData)).runNow()
+            case "swift" => scope.modState(_.copy(swift = redditData)).runNow()
           }
         }
       }
