@@ -51,6 +51,20 @@ object GlobalStyle extends StyleSheet.Inline {
   val siteSpecific = styleF.bool(isReddit => styleS(
     if (isReddit) reddit else hn
   ))
+
+  val aNoStyle = style(
+    &.link(
+      textDecorationLine.none,
+      color(inherit),
+      cursor.auto
+    ),
+
+    &.visited(
+      textDecorationLine.none,
+      color(inherit),
+      cursor.auto)
+  )
+
   //sitecontainer
   val container = styleWrap("container-fluid")
   val app = style(textAlign.center)
