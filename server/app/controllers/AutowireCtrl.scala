@@ -15,8 +15,8 @@ import upickle.Js.Obj
 import scala.concurrent.{ExecutionContext, Future}
 
 object Router extends autowire.Server[Js.Value, Reader, Writer] {
-  def write[Result: Writer](r: Result) = writeJs(r)
-  def read[Result: Reader](p: Js.Value) = readJs[Result](p)
+  def write[Res: Writer](r: Res) = writeJs(r)
+  def read[Res: Reader](p: Js.Value) = readJs[Res](p)
 }
 
 class AutowireCtrl @Inject()(apiService: ApiService)(implicit context: ExecutionContext, config: Configuration) extends Controller {
