@@ -5,7 +5,7 @@ object Settings {
 
   val name = "metaab-scalajs-play"
 
-  val version = "0.2"
+  val version = "0.3"
 
   /** Options for the scala compiler */
   val scalacOptions = Seq(
