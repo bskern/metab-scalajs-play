@@ -16,6 +16,8 @@ lazy val sharedJVM = shared.jvm.settings(name := "sharedJVM")
 
 lazy val sharedJS = shared.js.settings(name := "sharedJS")
 
+// use eliding to drop some debug code in the production build
+lazy val elideOptions = settingKey[Seq[String]]("Set limit for elidable functions")
 
 lazy val client = (project in file("client"))
   .settings(
@@ -24,6 +26,9 @@ lazy val client = (project in file("client"))
     scalaVersion := Settings.versions.scala,
     scalacOptions ++= Settings.scalacOptions,
     libraryDependencies ++= Settings.scalajsDependencies.value,
+    // by default we do development build, no eliding
+    elideOptions := Seq(),
+    scalacOptions ++= elideOptions.value,
     jsDependencies ++= Settings.jsDependencies.value,
     //use scalajs provided launcher code to start the client app
     persistLauncher := true,
@@ -43,6 +48,7 @@ lazy val server = (project in file("server"))
     scalaVersion := Settings.versions.scala,
     scalacOptions ++= Settings.scalacOptions,
     libraryDependencies ++= Seq(ws, cache) ++ Settings.jvmDependencies.value,
+    commands += ReleaseCmd,
     // triggers scalaJSPipeline when using compile or continuous compilation
     compile in Compile <<= (compile in Compile) dependsOn scalaJSPipeline,
     //connect to the client project
@@ -51,7 +57,18 @@ lazy val server = (project in file("server"))
     pipelineStages := Seq(digest, gzip)
   )
   .enablePlugins(PlayScala)
+  .aggregate(clients.map(projectToRef): _*)
   .dependsOn(sharedJVM)
+
+// Command for building a release
+lazy val ReleaseCmd = Command.command("release") {
+  state => "set elideOptions in client := Seq(\"-Xelide-below\", \"WARNING\")" ::
+    "client/clean" ::
+    "server/clean" ::
+    "server/dist" ::
+    "set elideOptions in client := Seq()" ::
+    state
+}
 
 
 
