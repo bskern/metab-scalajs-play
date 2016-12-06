@@ -1,5 +1,5 @@
 <configuration>
-    <conversionRule conversionWord="coloredLevel" converterClass="play.api.libs.logback.ColoredLevel" />
+    <conversionRule conversionWord="coloredLevel" converterClass="play.api.libs.logback.ColoredLevel"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -7,15 +7,30 @@
         </encoder>
     </appender>
 
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Support multiple-JVM writing to the same log file -->
+        <prudent>true</prudent>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logFile.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
     <!-- silent error messages on Scala.js full-optimized files -->
     <Logger name="com.gargoylesoftware.htmlunit.javascript.StrictErrorReporter" level="off">
-      <AppenderRef ref="STDOUT" />
+        <AppenderRef ref="FILE"/>
     </Logger>
 
-    <logger name="application" level="DEBUG" />
+    <!--<logger name="application" level="DEBUG"/>-->
 
     <root level="INFO">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE"/>
     </root>
 
 </configuration>
