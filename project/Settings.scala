@@ -1,5 +1,6 @@
 import sbt._
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import play.sbt.Play.autoImport._
 
 object Settings {
 
@@ -32,6 +33,8 @@ object Settings {
   ))
 
   val jvmDependencies = Def.setting(Seq(
+    ws,
+    cache,
     "com.vmunier" %% "scalajs-scripts" % "1.0.0",
     "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.0" % "test",
     "org.mockito" % "mockito-core" % "1.9.5" % "test"

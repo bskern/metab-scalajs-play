@@ -47,7 +47,7 @@ lazy val server = (project in file("server"))
     version := Settings.version,
     scalaVersion := Settings.versions.scala,
     scalacOptions ++= Settings.scalacOptions,
-    libraryDependencies ++= Seq(ws, cache) ++ Settings.jvmDependencies.value,
+    libraryDependencies ++= Settings.jvmDependencies.value,
     commands += ReleaseCmd,
     // triggers scalaJSPipeline when using compile or continuous compilation
     compile in Compile <<= (compile in Compile) dependsOn scalaJSPipeline,
