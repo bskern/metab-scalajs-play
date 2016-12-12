@@ -38,7 +38,7 @@ class DataService @Inject()(ws: WSClient)(implicit context: ExecutionContext) {
   def fetchFromHN(itemType:HN):Future[Seq[HNProcessing.HNItem]] = {
     Logger.debug(s"about to fetch from HN for $itemType stories ")
   for {
-      idResp <- ws.url("https://hacker-news.firebaseio.com/v0/topstories.json").get()
+      idResp <- ws.url(itemType.url).get()
       ids <- Future.successful(read[Seq[Double]](idResp.body))
       rawStories <- loadIndividualStories(ids)
     } yield {
