@@ -19,6 +19,7 @@ class DataService @Inject()(ws: WSClient)(implicit context: ExecutionContext) {
     val url = "https://query.yahooapis.com/v1/public/yql?q=select * from weather.forecast where u='f' AND woeid in (select woeid from geo.places(1) where text=\"minneapolis\")&format=json"
     ws.url(url).get().map { wsresp =>
       val weatherResp = read[WeatherResponse](wsresp.body)
+      Logger.warn(s"WeatherResp is $weatherResp")
       val weatherItem = weatherResp.query.results.channel.item
       val forecast = weatherItem.forecast.head
       val currentTemp = weatherItem.condition.temp
